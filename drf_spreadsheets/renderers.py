@@ -1,9 +1,9 @@
 import csv
+import io
 import json
 from abc import ABC
 from io import StringIO
 from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
 from rest_framework.renderers import BaseRenderer
 
 
@@ -191,6 +191,7 @@ class XLSXRenderer(SpreadsheetRenderer):
         wb.active.title = "Report Worksheet"
         for row in table:
             wb.active.append(row)
-
+        with io.BytesIO() as buffer:
+            wb.save(buffer)
         # Save
-        return save_virtual_workbook(wb)
+        return buffer.getvalue()
